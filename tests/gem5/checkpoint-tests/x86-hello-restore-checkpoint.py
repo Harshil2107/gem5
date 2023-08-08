@@ -36,6 +36,9 @@ This configuration serves as a test of restoring a checkpoint with X86 ISA.
 from gem5.isas import ISA
 from gem5.utils.requires import requires
 from gem5.resources.resource import obtain_resource, CheckpointResource
+from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import (
+    PrivateL1CacheHierarchy,
+)
 from gem5.components.boards.simple_board import SimpleBoard
 from gem5.components.processors.simple_processor import SimpleProcessor
 from gem5.simulate.simulator import Simulator
@@ -57,7 +60,7 @@ board = SimpleBoard(
 )
 board.set_se_binary_workload(
     obtain_resource("x86-hello64-static"),
-    checkpoint=CheckpointResource(local_path="./x86-hello-test-checkpoint"),
+    checkpoint=obtain_resource("x86-hello-test-checkpoint"),
 )
 
 sim = Simulator(board=board, full_system=False)

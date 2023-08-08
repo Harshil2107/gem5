@@ -60,7 +60,7 @@ board = SimpleBoard(
 )
 board.set_se_binary_workload(
     obtain_resource("power-hello"),
-    checkpoint=CheckpointResource(local_path="./power-hello-test-checkpoint"),
+    checkpoint=obtain_resource("power-hello-test-checkpoint"),
 )
 
 sim = Simulator(board=board, full_system=False)

@@ -37,6 +37,10 @@ This configuration serves as a test of restoring a checkpoint with ARM ISA.
 from gem5.isas import ISA
 from gem5.utils.requires import requires
 from gem5.resources.resource import obtain_resource, CheckpointResource
+
+from gem5.components.cachehierarchies.classic.private_l1_private_l2_cache_hierarchy import (
+    PrivateL1PrivateL2CacheHierarchy,
+)
 from gem5.components.boards.simple_board import SimpleBoard
 from gem5.components.processors.simple_processor import SimpleProcessor
 from gem5.simulate.simulator import Simulator
@@ -63,7 +67,7 @@ board = SimpleBoard(
 
 board.set_se_binary_workload(
     obtain_resource("arm-hello64-static"),
-    checkpoint=CheckpointResource(local_path="./arm-hello-test-checkpoint"),
+    checkpoint=obtain_resource("arm-hello-test-checkpoint"),
 )
 
 sim = Simulator(board=board, full_system=False)

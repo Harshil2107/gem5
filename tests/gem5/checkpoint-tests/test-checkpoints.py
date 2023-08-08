@@ -39,8 +39,9 @@ else:
 
 hello_verifier = verifier.MatchRegex(re.compile(r"Hello world!"))
 save_checkpoint_verifier = verifier.MatchRegex(
-    re.compile(r"Done taking a checkpoint")
+    re.compile(r"Done taking checkpoint")
 )
+
 
 gem5_verify_config(
     name="test-checkpoint-arm-hello-save-checkpoint",
@@ -68,10 +69,9 @@ gem5_verify_config(
     verifiers=(hello_verifier,),
     config=joinpath(
         config.base_dir,
-        "configs",
-        "example",
-        "gem5_library",
-        "checkpoints",
+        "tests",
+        "gem5",
+        "checkpoint-tests",
         "arm-hello-restore-checkpoint.py",
     ),
     config_args=[],
@@ -79,3 +79,188 @@ gem5_verify_config(
     valid_hosts=constants.supported_hosts,
     length=constants.quick_tag,
 )
+
+gem5_verify_config(
+    name="test-checkpoint-x86-hello-save-checkpoint",
+    fixtures=(),
+    verifiers=(save_checkpoint_verifier,),
+    config=joinpath(
+        config.base_dir,
+        "tests",
+        "gem5",
+        "checkpoint-tests",
+        "x86-hello-save-checkpoint.py",
+    ),
+    config_args=[
+        "--checkpoint-path",
+        joinpath(resource_path, "x86-hello-test-checkpoint"),
+    ],
+    valid_isas=(constants.all_compiled_tag,),
+    valid_hosts=constants.supported_hosts,
+    length=constants.quick_tag,
+)
+
+gem5_verify_config(
+    name="test-checkpoint-x86-hello-restore-checkpoint",
+    fixtures=(),
+    verifiers=(hello_verifier,),
+    config=joinpath(
+        config.base_dir,
+        "tests",
+        "gem5",
+        "checkpoint-tests",
+        "x86-hello-restore-checkpoint.py",
+    ),
+    config_args=[],
+    valid_isas=(constants.all_compiled_tag,),
+    valid_hosts=constants.supported_hosts,
+    length=constants.quick_tag,
+)
+
+gem5_verify_config(
+    name="test-checkpoint-x86-fs-save-checkpoint",
+    fixtures=(),
+    verifiers=(save_checkpoint_verifier,),
+    config=joinpath(
+        config.base_dir,
+        "tests",
+        "gem5",
+        "checkpoint-tests",
+        "x86-fs-save-checkpoint.py",
+    ),
+    config_args=[
+        "--checkpoint-path",
+        joinpath(resource_path, "x86-fs-test-checkpoint"),
+    ],
+    valid_isas=(constants.all_compiled_tag,),
+    valid_hosts=constants.supported_hosts,
+    length=constants.quick_tag,
+)
+
+gem5_verify_config(
+    name="test-checkpoint-x86-fs-restore-checkpoint",
+    fixtures=(),
+    verifiers=(),
+    config=joinpath(
+        config.base_dir,
+        "tests",
+        "gem5",
+        "checkpoint-tests",
+        "x86-fs-restore-checkpoint.py",
+    ),
+    config_args=[],
+    valid_isas=(constants.all_compiled_tag,),
+    valid_hosts=constants.supported_hosts,
+    length=constants.quick_tag,
+)
+
+gem5_verify_config(
+    name="test-checkpoint-power-hello-save-checkpoint",
+    fixtures=(),
+    verifiers=(save_checkpoint_verifier,),
+    config=joinpath(
+        config.base_dir,
+        "tests",
+        "gem5",
+        "checkpoint-tests",
+        "power-hello-save-checkpoint.py",
+    ),
+    config_args=[
+        "--checkpoint-path",
+        joinpath(resource_path, "power-hello-test-checkpoint"),
+    ],
+    valid_isas=(constants.all_compiled_tag,),
+    valid_hosts=constants.supported_hosts,
+    length=constants.quick_tag,
+)
+
+gem5_verify_config(
+    name="test-checkpoint-power-hello-restore-checkpoint",
+    fixtures=(),
+    verifiers=(hello_verifier,),
+    config=joinpath(
+        config.base_dir,
+        "tests",
+        "gem5",
+        "checkpoint-tests",
+        "power-hello-restore-checkpoint.py",
+    ),
+    config_args=[],
+    valid_isas=(constants.all_compiled_tag,),
+    valid_hosts=constants.supported_hosts,
+    length=constants.quick_tag,
+)
+
+# gem5_verify_config(
+#     name="test-checkpoint-mips-hello-save-checkpoint",
+#     fixtures=(),
+#     verifiers=(save_checkpoint_verifier,),
+#     config=joinpath(
+#         config.base_dir,
+#         "tests",
+#         "gem5",
+#         "checkpoint-tests",
+#         "mips-hello-save-checkpoint.py",
+#     ),
+#     config_args=[
+#         # "--checkpoint-path",
+#         # joinpath(resource_path, "mips-hello-test-checkpoint"),
+#     ],
+#     valid_isas=(constants.all_compiled_tag,),
+#     valid_hosts=constants.supported_hosts,
+#     length=constants.quick_tag,
+# )
+
+# gem5_verify_config(
+#     name="test-checkpoint-mips-hello-restore-checkpoint",
+#     fixtures=(),
+#     verifiers=(hello_verifier,),
+#     config=joinpath(
+#         config.base_dir,
+#         "tests",
+#         "gem5",
+#         "checkpoint-tests",
+#         "mips-hello-restore-checkpoint.py",
+#     ),
+#     config_args=[],
+#     valid_isas=(constants.all_compiled_tag,),
+#     valid_hosts=constants.supported_hosts,
+#     length=constants.quick_tag,
+# )
+
+# gem5_verify_config(
+#     name="test-checkpoint-sparc-hello-save-checkpoint",
+#     fixtures=(),
+#     verifiers=(save_checkpoint_verifier,),
+#     config=joinpath(
+#         config.base_dir,
+#         "tests",
+#         "gem5",
+#         "checkpoint-tests",
+#         "sparc-hello-save-checkpoint.py",
+#     ),
+#     config_args=[
+#         # "--checkpoint-path",
+#         # joinpath(resource_path, "sparc-hello-test-checkpoint"),
+#     ],
+#     valid_isas=(constants.all_compiled_tag,),
+#     valid_hosts=constants.supported_hosts,
+#     length=constants.quick_tag,
+# )
+
+# gem5_verify_config(
+#     name="test-checkpoint-sparc-hello-restore-checkpoint",
+#     fixtures=(),
+#     verifiers=(hello_verifier,),
+#     config=joinpath(
+#         config.base_dir,
+#         "tests",
+#         "gem5",
+#         "checkpoint-tests",
+#         "sparc-hello-restore-checkpoint.py",
+#     ),
+#     config_args=[],
+#     valid_isas=(constants.all_compiled_tag,),
+#     valid_hosts=constants.supported_hosts,
+#     length=constants.quick_tag,
+# )
