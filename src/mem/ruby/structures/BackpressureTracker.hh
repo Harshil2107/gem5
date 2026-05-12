@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021,2023,2026 Arm Limited
+ * Copyright (c) 2021, 2026 ARM Limited
  * All rights reserved
  *
  * The license below extends only to copyright in the software and shall
@@ -10,9 +10,6 @@
  * terms below provided that you ensure that this notice is replicated
  * unmodified and in its entirety in all distributions of the software,
  * modified or unmodified, in source code or in binary form.
- *
- * Copyright (c) 1999-2005 Mark D. Hill and David A. Wood
- * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -38,28 +35,66 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Miscallaneous Functions
+#ifndef __MEM_RUBY_STRUCTURES_BACKPRESSURETRACKER_HH__
+#define __MEM_RUBY_STRUCTURES_BACKPRESSURETRACKER_HH__
 
-void error(std::string msg);
-void assert(bool condition);
-Cycles zero_time();
-Cycles intToCycles(int c);
-int cyclesToInt(Cycles c);
-Tick intToTick(int c);
-NodeID intToID(int nodenum);
-int IDToInt(NodeID id);
-int addressToInt(Addr addr);
-Addr intToAddress(int addr);
-int addressOffset(Addr addr, Addr base);
-int max_tokens();
-Addr makeLineAddress(Addr addr);
-Addr makeLineAddress(Addr addr, int cacheLineBits);
-int getOffset(Addr addr);
-int mod(int val, int mod);
-Addr bitSelect(Addr addr, int small, int big);
-Addr maskLowOrderBits(Addr addr, int number);
-Addr makeNextStrideAddress(Addr addr, int stride);
-structure(BoolVec, external="yes") {
+#include <iostream>
+
+#include "mem/ruby/common/MachineID.hh"
+#include "params/BackpressureTracker.hh"
+#include "sim/sim_object.hh"
+
+namespace gem5
+{
+
+namespace ruby
+{
+
+// Tracks responder-side backpressure information for downstream requests.
+class BackpressureTracker : public SimObject
+{
+  public:
+    PARAMS(BackpressureTracker);
+
+    /** Construct a tracker with simulator-owned configuration parameters. */
+    BackpressureTracker(const Params &p);
+
+    /**
+     * Record the latest backpressure level observed for a responder.
+     *
+     * @param mach_id Responder identifier associated with the observation.
+     * @param cbusy Backpressure level reported by that responder.
+     */
+    virtual void update(const MachineID &mach_id, int cbusy) = 0;
+
+    /**
+     * Record the latest backpressure level for responses observed on an
+     * alternate transfer path.
+     *
+     * @param mach_id Responder identifier associated with the observation.
+     * @param cbusy Backpressure level reported by that responder.
+     */
+    virtual void updateDMT(const MachineID &mach_id, int cbusy) = 0;
+
+    /**
+     * Return a summarized backpressure level across tracked responders.
+     *
+     * The exact aggregation policy is implementation-defined.
+     */
+    virtual int report() = 0;
+
+    /** Print a human-readable summary of the tracked backpressure state. */
+    virtual void print(std::ostream &out) const = 0;
+};
+
+inline std::ostream &
+operator<<(std::ostream &out, const BackpressureTracker &obj)
+{
+    obj.print(out);
+    return out;
 }
-int countBoolVec(BoolVec bVec);
-RequestorID getRequestorID(RequestPtr req);
+
+} // namespace ruby
+} // namespace gem5
+
+#endif // __MEM_RUBY_STRUCTURES_BACKPRESSURETRACKER_HH__

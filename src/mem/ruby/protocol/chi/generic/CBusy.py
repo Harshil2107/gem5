@@ -1,6 +1,4 @@
-# -*- mode:python -*-
-
-# Copyright (c) 2023, 2026 Arm Limited
+# Copyright (c) 2026 Arm Limited
 # All rights reserved.
 #
 # The license below extends only to copyright in the software and shall
@@ -35,19 +33,39 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-Import('*')
+from m5.objects.BackpressureGen import BackpressureGen
+from m5.objects.BackpressureTracker import BackpressureTracker
+from m5.params import *
 
-if not env['CONF']['RUBY_PROTOCOL_CHI']:
-    Return()
 
-SimObject('CHIGeneric.py', sim_objects=['CHIGenericController'])
-SimObject(
-    'CBusy.py',
-    sim_objects=['BaseCBusy', 'CBusy', 'SnfCBusy', 'CBusyTracker']
-)
+class BaseCBusy(BackpressureGen):
+    type = "BaseCBusy"
+    cxx_header = "mem/ruby/protocol/chi/generic/CBusy.hh"
+    cxx_class = "gem5::ruby::CHI::BaseCBusy"
+    abstract = True
 
-DebugFlag('RubyCHIGeneric')
-DebugFlag('RubyCHIGenericVerbose')
+    # 0 = Less than 50% full
+    # 1 = Greater than 50% full
+    # 2 = Greater than 75% full
+    # 3 = Greater than 90% full
+    threshold_0 = Param.Unsigned(50, "Threshold for cbusy level 0")
+    threshold_1 = Param.Unsigned(75, "Threshold for cbusy level 1")
+    threshold_2 = Param.Unsigned(90, "Threshold for cbusy level 2")
 
-Source('CHIGenericController.cc')
-Source('CBusy.cc')
+
+class CBusy(BaseCBusy):
+    type = "CBusy"
+    cxx_header = "mem/ruby/protocol/chi/generic/CBusy.hh"
+    cxx_class = "gem5::ruby::CHI::CBusy"
+
+
+class SnfCBusy(BaseCBusy):
+    type = "SnfCBusy"
+    cxx_header = "mem/ruby/protocol/chi/generic/CBusy.hh"
+    cxx_class = "gem5::ruby::CHI::SnfCBusy"
+
+
+class CBusyTracker(BackpressureTracker):
+    type = "CBusyTracker"
+    cxx_header = "mem/ruby/protocol/chi/generic/CBusy.hh"
+    cxx_class = "gem5::ruby::CHI::CBusyTracker"

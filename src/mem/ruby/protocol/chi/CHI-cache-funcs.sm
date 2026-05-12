@@ -775,6 +775,30 @@ void processRetryQueue() {
   }
 }
 
+public int tbeSize() {
+  return storTBEs.size();
+}
+
+public int tbeReserved() {
+  return storTBEs.reserved();
+}
+
+public int tbeCapacity() {
+  return storTBEs.capacity();
+}
+
+public bool hasRetryQueueEntries() {
+  return !retryQueue.empty();
+}
+
+int getCurrCBusy(CHIDataMsg message) {
+  return cbusy_generator.generate(this, message);
+}
+
+int getCurrCBusy(CHIResponseMsg message) {
+  return cbusy_generator.generate(this, message);
+}
+
 void printResources() {
   if (unify_repl_TBEs) {
     assert(storReplTBEs.size() == 0);

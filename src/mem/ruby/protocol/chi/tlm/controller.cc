@@ -187,6 +187,7 @@ CacheController::Transaction::handle(const CHIResponseMsg *msg)
     phase.rsp_opcode = opcode;
     phase.resp = ruby_to_tlm::rspResp(msg->m_type);
     phase.txn_id = msg->m_txnId;
+    phase.c_busy = msg->m_cbusy;
 
     controller->bw(payload, &phase);
     return opcode != ARM::CHI::RSP_OPCODE_RETRY_ACK;
@@ -208,6 +209,7 @@ CacheController::ReadTransaction::handle(const CHIDataMsg *msg)
     phase.resp = ruby_to_tlm::datResp(msg->m_type);
     phase.txn_id = msg->m_txnId;
     phase.data_id = dataId(msg->m_addr + msg->m_bitMask.firstBitSet(true));
+    phase.c_busy = msg->m_cbusy;
 
     // This is a hack, we should fix it on the ruby side
     if (forward(msg)) {

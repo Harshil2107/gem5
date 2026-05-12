@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021,2023,2026 Arm Limited
+ * Copyright (c) 2026 Arm Limited
  * All rights reserved
  *
  * The license below extends only to copyright in the software and shall
@@ -10,9 +10,6 @@
  * terms below provided that you ensure that this notice is replicated
  * unmodified and in its entirety in all distributions of the software,
  * modified or unmodified, in source code or in binary form.
- *
- * Copyright (c) 1999-2005 Mark D. Hill and David A. Wood
- * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -38,28 +35,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Miscallaneous Functions
+#ifndef __MEM_RUBY_STRUCTURES_BACKPRESSURE_GEN_HH__
+#define __MEM_RUBY_STRUCTURES_BACKPRESSURE_GEN_HH__
 
-void error(std::string msg);
-void assert(bool condition);
-Cycles zero_time();
-Cycles intToCycles(int c);
-int cyclesToInt(Cycles c);
-Tick intToTick(int c);
-NodeID intToID(int nodenum);
-int IDToInt(NodeID id);
-int addressToInt(Addr addr);
-Addr intToAddress(int addr);
-int addressOffset(Addr addr, Addr base);
-int max_tokens();
-Addr makeLineAddress(Addr addr);
-Addr makeLineAddress(Addr addr, int cacheLineBits);
-int getOffset(Addr addr);
-int mod(int val, int mod);
-Addr bitSelect(Addr addr, int small, int big);
-Addr maskLowOrderBits(Addr addr, int number);
-Addr makeNextStrideAddress(Addr addr, int stride);
-structure(BoolVec, external="yes") {
-}
-int countBoolVec(BoolVec bVec);
-RequestorID getRequestorID(RequestPtr req);
+#include "params/BackpressureGen.hh"
+#include "sim/sim_object.hh"
+
+namespace gem5
+{
+
+namespace ruby
+{
+
+class AbstractController;
+class Message;
+
+class BackpressureGen : public SimObject
+{
+  public:
+    PARAMS(BackpressureGen);
+    BackpressureGen(const Params &p);
+
+    virtual int generate(AbstractController *ctrl,
+                         const Message &msg) const = 0;
+};
+
+} // namespace ruby
+} // namespace gem5
+
+#endif // __MEM_RUBY_STRUCTURES_BACKPRESSURE_GEN_HH__
